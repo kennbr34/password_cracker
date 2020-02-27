@@ -16,6 +16,7 @@
 #include <sys/types.h>
 #include <signal.h>
 #include <ctype.h>
+#include <locale.h>
 
 typedef struct {
     #define KEYLEN 256
@@ -122,6 +123,7 @@ int crack(FILE *dbh, KEY key, HEADER hdr, ENTRY entry)
 	size_t buflen = BUFLEN;
 	uint32_t mstrPassSeed = 0;
 	int i = 0, nonascii = 0;
+	setlocale(LC_NUMERIC, "");
 	
 	derive_key(&key, trialSeed);
 	
@@ -172,7 +174,7 @@ int crack(FILE *dbh, KEY key, HEADER hdr, ENTRY entry)
 				fprintf(stdout,"Master Pass: %s\n", hdr.master_pass);
 				fprintf(stdout,"Seed value: %u\n", trialSeed);
 				fprintf(stdout,"Time elapsed: %u seconds\n", (unsigned int)time(0) - startTime);
-				fprintf(stdout,"Pid %i tried %u seeds in %i seconds, %.2f seeds per second \n", getpid(), trialSeed - startSeed, timeElapsed, seedsPerSecond);
+				fprintf(stdout,"Pid %i tried %'u seeds in %i seconds, %'.2f seeds per second \n", getpid(), trialSeed - startSeed, timeElapsed, seedsPerSecond);
 						
 				printf ("\n");
 				fflush(stdout);
@@ -187,10 +189,10 @@ int crack(FILE *dbh, KEY key, HEADER hdr, ENTRY entry)
 	{
 		timeElapsed = time(0) - startTime;
 		seedsPerSecond = (float)(trialSeed-startSeed)/timeElapsed;
-		fprintf(stderr,"Pid: %i started from seed %u to %u, ", getpid(), startSeed, ((UINT_MAX/cpuCores) + startSeed));
-		fprintf(stderr,"%u seeds tried in %i seconds, %.2f seeds per second \n", trialSeed - startSeed, timeElapsed, seedsPerSecond);
+		fprintf(stderr,"Pid: %i started from seed %'u to %'u, ", getpid(), startSeed, ((UINT_MAX/cpuCores) + startSeed));
+		fprintf(stderr,"%'u seeds tried in %i seconds, %'.2f seeds per second \n", trialSeed - startSeed, timeElapsed, seedsPerSecond);
 		if(getpid() == ppid)
-			fprintf(stderr,"%.3f percent complete, ~%.2f hours left, ~%.2f seeds per second overall\n", ( ((float)(trialSeed-startSeed)/UINT_MAX) * 100) * cpuCores, ( (((UINT_MAX/cpuCores)-trialSeed-startSeed)/seedsPerSecond) / 3600), seedsPerSecond * cpuCores);
+			fprintf(stderr,"%.3f percent complete, ~%.2f hours left, ~%'.2f seeds per second overall\n", ( ((float)(trialSeed-startSeed)/UINT_MAX) * 100) * cpuCores, ( (((UINT_MAX/cpuCores)-trialSeed-startSeed)/seedsPerSecond) / 3600), seedsPerSecond * cpuCores);
 		
 		fflush(stderr);
 	}
