@@ -1,7 +1,3 @@
-/* "Military-Grade Password Cracker" - Hushcon 2015 CTF  */
-/* Public domain 2019, kennbr34@gmail.com, epixoip@hushcon.com              */
-/* cc -g -W -Wall -o passwd_cracker passwd_cracker.c             */
-
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
